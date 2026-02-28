@@ -53,4 +53,21 @@ public class ReservationDAOImpl implements ReservationDAO {
             return false;
         }
     }
+    @Override
+    public Reservation getReservationById(int id) {
+        String sql = "SELECT * FROM reservations WHERE id = ?";
+        try (Connection connection = util.DBConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Reservation(
+                        rs.getInt("id"), rs.getString("guest_name"),
+                        rs.getString("room_number"), rs.getString("check_in"),
+                        rs.getDouble("total_price"), rs.getString("status")
+                );
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return null;
+    }
 }
